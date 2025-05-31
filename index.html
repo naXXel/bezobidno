@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секретное сообщение</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            cursor: default;
+        }
+        
+        .container {
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: #ff6b08;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #ff8c3a;
+            transform: scale(1.05);
+        }
+        
+        .scrimer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .scrimer-img {
+            max-width: 100%;
+            max-height: 80vh;
+            filter: drop-shadow(0 0 30px red);
+        }
+        
+        .scrimer-text {
+            color: red;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 0 20px #ff0000;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .progress-bar {
+            width: 80%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff0000, #ff6b08);
+            transition: width 0.3s;
+        }
+        
+        .virus {
+            position: absolute;
+            font-size: 2rem;
+            animation: float 7s infinite linear;
+            opacity: 0.7;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Важное сообщение для тебя! ✨</h1>
+        <p>Мы проанализировали твои данные и обнаружили кое-что интересное...</p>
+        <p>Нажми на кнопку ниже, чтобы узнать что-то важное о себе!</p>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <button class="btn" id="showMessage">Узнать правду</button>
+    </div>
+    
+    <div class="scrimer" id="scrimer">
+        <img src="scrimer.jpg" class="scrimer-img" alt="SCREAMER">
+        <div class="scrimer-text">ТЫ ПОЙМАЛ ВИРУС, СЫНША!</div>
+    </div>
+    
+    <script>
+        // Генерация летающих "вирусов"
+        for (let i = 0; i < 20; i++) {
+            const virus = document.createElement('div');
+            virus.classList.add('virus');
+            virus.textContent = '🦠';
+            virus.style.left = `${Math.random() * 100}%`;
+            virus.style.animationDelay = `${Math.random() * 5}s`;
+            virus.style.fontSize = `${Math.random() * 20 + 15}px`;
+            document.body.appendChild(virus);
+        }
+
+        // Обработчик основной кнопки
+        document.getElementById('showMessage').addEventListener('click', function() {
+            const btn = this;
+            const progress = document.getElementById('progress');
+            
+            // Блокируем кнопку
+            btn.disabled = true;
+            btn.textContent = 'Анализируем данные...';
+            
+            // Анимация прогресс-бара
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 2;
+                progress.style.width = `${width}%`;
+                
+                if (width >= 100) {
+                    clearInterval(interval);
+                    showScrimer();
+                }
+            }, 50);
+        });
+        
+        // Показать скример
+        function showScrimer() {
+            const scrimer = document.getElementById('scrimer');
+            
+            // Показываем скример
+            scrimer.style.display = 'flex';
+            
+            // Дополнительные эффекты
+            document.body.style.backgroundColor = 'black';
+            document.body.style.backgroundImage = 'none';
+            
+            // Запрет закрытия
+            window.addEventListener('beforeunload', function(e) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            });
+        }
+        
+        // Дополнительный триггер при попытке закрыть страницу
+        window.addEventListener('mouseout', function(e) {
+            if (e.clientY < 0) {
+                showScrimer();
+            }
+        });
+    </script>
+</body>
+</html>
